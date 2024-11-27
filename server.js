@@ -284,8 +284,8 @@ app.get("/api/v1/get-station-list", async (req, res) => {
     let _tempData = response.data || [];
     _tempData = _tempData.map((data) => {
       return {
-        stationName: data.split("-")[0],
-        stationCode: data.split("-")[1],
+        stationName: data.split(" - ")[0],
+        stationCode: data.split(" - ")[1],
         station: data,
       };
     });

@@ -30,25 +30,6 @@ app.get("/api/v1/CaptchaConfig", async (req, res) => {
   }
 });
 
-app.get("/api/v1/station-list", async (req, res) => {
-  try {
-    const apiUrl = `https://www.indianrail.gov.in/enquiry/FetchAutoComplete?_=${new Date().getTime()}`; // Example API URL
-    const response = await axios.get(apiUrl);
-    const _tempData = response.data || [];
-    _tempData = _tempData.map((data) => {
-      return {
-        stationName: data.split(" - ")[0],
-        stationCode: data.split(" - ")[1],
-        station: data,
-      };
-    });
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error calling the API:", error);
-    res.status(500).json({ error: "Failed to fetch data" });
-  }
-});
-
 app.get("/api/v1/get-captcha-value", async (req, res) => {
   try {
     const response = await getCaptchaValue();
@@ -298,8 +279,24 @@ app.get("/api/v1/get-live-station-info", async (req, res) => {
 
 app.get("/api/v1/get-station-list", async (req, res) => {
   try {
-  } catch (eerror) {
-    res.status(500).json({ error: error });
+    const apiUrl = `https://www.indianrail.gov.in/enquiry/FetchAutoComplete?_=${new Date().getTime()}`; // Example API URL
+    const response = await axios.get(apiUrl);
+    let _tempData = response.data || [];
+    _tempData = _tempData.map((data) => {
+      return {
+        stationName: data.split("-")[0],
+        stationCode: data.split("-")[1],
+        station: data,
+      };
+    });
+    res.json({
+      success: true,
+      length: _tempData.length || "",
+      data: _tempData,
+    });
+  } catch (error) {
+    console.error("Error calling the API:", error);
+    res.status(500).json({ error: "Failed to fetch data" });
   }
 });
 
